@@ -75,6 +75,7 @@ class HumanEvalAgent(BaseAgent):
 
     def __init__(self):
         super().__init__()
+        self.api_key = os.getenv("OPENAI_API_KEY")
         self.system_instruction = (
             """You are a Python code completion agent.
             Your task is to complete a given incomplete Python code snippet so that the final program is correct, coherent, and fully functional.
@@ -89,14 +90,13 @@ class HumanEvalAgent(BaseAgent):
         )
 
     def get_completions(self, 
-                        api_key, 
                         problems, 
                         base_url=None,
                         model="gpt-4o", 
                         n_completions=1):
 
         client = OpenAI(base_url=base_url, 
-                        api_key=api_key)
+                        api_key=self.api_key)
         
         messages = [
             {
@@ -135,9 +135,12 @@ class HumanEvalAgent(BaseAgent):
 
         problems = task_step_inputs["problems"]
         n = task_step_inputs["n_completions"]
+        base_url = task_step_inputs["api"]["base_url"]
+        model = task_step_inputs["api"]["model"]
+
         try:
             logger.info(f"[HumanEvalAgent]: Calling OpenAI API")
-            completions = self.get_completions(problems, n)
+            completions = self.get_completions(problems, base_url, model, n)
             logger.info(f"[HumanEvalAgent]: Generated completions: {completions}")
             return completions
         
