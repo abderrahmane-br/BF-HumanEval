@@ -1,7 +1,8 @@
 from collections import defaultdict, Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
-
+import argparse
+from os import path, makedirs
 import numpy as np
 import tqdm
 import json
@@ -79,7 +80,7 @@ def evaluate_functional_correctness(
     return combine_results(), scores
 
 
-def evaluate(intelligence_url, problem_file, k, n_completions, out_file_path):
+def evaluate(intelligence_url, problem_file, k, n_completions, out_dir):
 
     bench_client = HumanEvalClient(intelligence_url)
     problems = read_problems(problem_file)
@@ -99,7 +100,7 @@ def evaluate(intelligence_url, problem_file, k, n_completions, out_file_path):
 
     formatted_result = format_result(results, scores)
     # print("formatted res ", formatted_result)
-    save_result(formatted_result, out_file_path)
+    save_result(formatted_result, out_dir)
 
 def format_result(results, scores):
 
@@ -132,8 +133,9 @@ def format_result(results, scores):
 
 
 
-def save_result(result, output_file_path):
+def save_result(result, out_dir):
     # print('result ', result)
+    output_file_path = path.join(out_dir, "humaneval_results.json")
     with open(output_file_path, "wb") as fp:
         fp.write(json.dumps(result).encode('utf-8'))
 
@@ -151,10 +153,26 @@ class HumanEvalClient(BenchClient):
     
 
 if __name__ == "__main__":
-    evaluate(
-        intelligence_url="http://0.0.0.0:10004",
-        problem_file="/workspaces/benchflow/human-eval/data/example_problem.jsonl",
-        k=[1, 3],
-        n_completions=6,
-        out_file_path="./output.json"
-    )
+    # evaluate(
+    #     intelligence_url="http://0.0.0.0:10004",
+    #     problem_file="/workspaces/benchflow/human-eval/data/example_problem.jsonl",
+    #     k=[1, 3],
+    #     n_completions=6,
+    #     out_file_path="./output.json"
+    # )
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--intelligence_url", type=str)
+    parser.add_argument("--problems_file", type=str)
+    parser.add_argument("--k", nargs="+", type=int)
+    parser.add_argument("--n_completions", type=int)
+    parser.add_argument("--output_dir", type=str)
+    parser.add_argument("--base_url", type=str, required=False)
+    parser.add_argument("--model", type=str, required=False)
+
+    args = parser.parse_args()
+
+    makedirs(args.output_dir, exist_ok=True)
+
+    evaluate(args.intelligence_url, args.problems_file, args.k, args.n_completions, args.output_dir)
