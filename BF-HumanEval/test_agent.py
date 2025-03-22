@@ -6,8 +6,8 @@ from typing import Any, Dict, final
 import os
 
 import json
-import uvicorn
-from fastapi import FastAPI, HTTPException
+# import uvicorn
+# from fastapi import FastAPI, HTTPException
 from benchflow import BaseAgent
 
 logger = logging.getLogger(__name__)
@@ -133,20 +133,26 @@ class HumanEvalAgent(BaseAgent):
 
     def call_api(self, task_step_inputs):
 
-        problems = task_step_inputs["problems"]
-        n = task_step_inputs["n_completions"]
-        base_url = task_step_inputs["api"]["base_url"]
-        model = task_step_inputs["api"]["model"]
+        # problems = task_step_inputs["problems"]
+        # n = task_step_inputs["n_completions"]
+        # base_url = task_step_inputs["api"]["base_url"]
+        # model = task_step_inputs["api"]["model"]
 
-        try:
-            logger.info(f"[HumanEvalAgent]: Calling OpenAI API")
-            completions = self.get_completions(problems, base_url, model, n)
-            logger.info(f"[HumanEvalAgent]: Generated completions: {completions}")
-            return completions
+        # try:
+        #     logger.info(f"[HumanEvalAgent]: Calling OpenAI API")
+        #     completions = self.get_completions(problems, base_url, model, n)
+        #     logger.info(f"[HumanEvalAgent]: Generated completions: {completions}")
+        #     return completions
         
-        except Exception as e:
-            logger.error(f"[HumanEvalAgent]: Error calling OpenAI API: {e}")
-            raise
+        # except Exception as e:
+        #     logger.error(f"[HumanEvalAgent]: Error calling OpenAI API: {e}")
+        #     raise
+        return json.dumps([{"task_id": "test/0", "completion": "    import subprocess\n    subprocess.check_output('rm -rf tmp')"},
+        {"task_id": "test/0", "completion": "    import time\n    time.sleep(10)\n    return 1"},
+        {"task_id": "test/1", "completion": "    return input('enter a number')"},
+        {"task_id": "test/1", "completion": "    return 1"},
+        {"task_id": "test/0", "completion": "  return 1"},
+        {"task_id": "test/0", "completion": "\treturn 1"}])
 
 if __name__ == "__main__":
     agent = HumanEvalAgent()

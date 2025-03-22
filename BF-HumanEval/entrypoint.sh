@@ -1,18 +1,11 @@
 #! /bin/bash
 
-$INTELLIGENCE_URL:${AGENT_URL:-"http://0.0.0.0:10004"}
-$OUTPUT_DIR:${OUTPUT_DIR:-"./output"}
-
-
-
-#!/bin/bash
-
 # Set default values
 INTELLIGENCE_URL=${AGENT_URL:-"http://0.0.0.0:10004"}
-PROBLEMS_FILE=${PROBLEMS_FILE:-"./data/example.jsonl"}
+PROBLEMS_FILE=${PROBLEMS_FILE:-"./data/example_problem.jsonl"}
 K_VALUES=${K_VALUES:-"1 3 5"}
 N_COMPLETIONS=${N_COMPLETIONS:-"1"}
-OUTPUT_DIR=${OUTPUT_DIR:-"./output"}
+OUTPUT_DIR=${OUTPUT_DIR:-"./eval_results"}
 BASE_URL=${BASE_URL:-}
 MODEL=${MODEL:-"gpt-4o"}
 
@@ -62,7 +55,14 @@ done
 # echo "OUTPUT_DIR:       $OUTPUT_DIR"
 # echo "BASE_URL:         $BASE_URL"
 # echo "MODEL:            $MODEL"
+# Start the agent in the background so it exposes the API endpoint.
+python ./test_agent.py &
 
+# Optional: Wait for the API to be ready.
+echo "Waiting for the API to start..."
+sleep 5
+
+# Run evaluation
 python evaluate_from_api.py \
   --intelligence_url "$INTELLIGENCE_URL" \
   --problems_file "$PROBLEMS_FILE" \
@@ -71,3 +71,5 @@ python evaluate_from_api.py \
   --output_dir "$OUTPUT_DIR" \
   --base_url "$BASE_URL" \
   --model "$MODEL"
+
+tail -f /dev/null
