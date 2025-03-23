@@ -18,8 +18,7 @@ class HumanEvalBench(BaseBench):
         return BenchArgs(arguments)
     
     def get_image_name(self) -> str:
-        # return "abderrahmane-br/benchflow:humaneval-v1"
-        pass
+        return "brabderrahmane/benchflow:humaneval-v1"
 
     def get_results_dir_in_container(self) -> str:
         return "/app/eval_results"
