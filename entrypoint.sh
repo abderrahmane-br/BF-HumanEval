@@ -55,12 +55,7 @@ done
 # echo "OUTPUT_DIR:       $OUTPUT_DIR"
 # echo "BASE_URL:         $BASE_URL"
 # echo "MODEL:            $MODEL"
-# Start the agent in the background so it exposes the API endpoint.
-python ./test_agent.py &
 
-# Optional: Wait for the API to be ready.
-echo "Waiting for the API to start..."
-sleep 5
 
 # Run evaluation
 python evaluate_from_api.py \
@@ -72,4 +67,4 @@ python evaluate_from_api.py \
   --base_url "$BASE_URL" \
   --model "$MODEL"
 
-tail -f /dev/null
+# tail -f /dev/null
