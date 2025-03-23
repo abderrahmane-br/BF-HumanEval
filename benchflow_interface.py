@@ -11,7 +11,11 @@ class HumanEvalBench(BaseBench):
         super.__init__()
 
     def get_args(self, task_id: str) -> BenchArgs:
-        pass
+        arguments = {
+            "required": ["K_VALUES", "N_COMPLETIONS"],
+            "optional": ["BASE_URL", "MODEL"]
+        }
+        return BenchArgs(arguments)
     
     def get_image_name(self) -> str:
         # return "abderrahmane-br/benchflow:humaneval-v1"
@@ -71,4 +75,3 @@ class HumanEvalBench(BaseBench):
     def get_all_tasks(self, split: str) -> Dict[str, Any]:
         # Only one task for HumanEval benchmark
         return {"task_ids": ["0"], "error_message": None}
-        pass
