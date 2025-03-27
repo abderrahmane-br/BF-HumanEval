@@ -2,3 +2,4 @@ openai
 benchflow>=0.1.12
 tqdm
 numpy
+requests

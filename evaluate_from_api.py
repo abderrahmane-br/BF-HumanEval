@@ -7,7 +7,7 @@ import numpy as np
 import tqdm
 import json
 
-from utils.utils import read_problems, estimate_pass_at_k
+from utils.utils import read_problems, estimate_pass_at_k, post_log
 from utils.execution import check_correctness
 
 from benchflow import BenchClient
@@ -26,6 +26,13 @@ def evaluate_functional_correctness(
     """
     Evaluates the functional correctness of generated samples"
     """
+    payload = {
+            "data": {
+                "message": "[HUMANEVAL Client]: evaluating functional correctness" 
+            }
+        }
+    post_log(payload)
+
 
     # Check the generated samples against test suites.
     with ThreadPoolExecutor(max_workers=n_workers) as executor:
@@ -82,6 +89,13 @@ def evaluate_functional_correctness(
 
 def evaluate(intelligence_url, problem_file, k, n_completions, out_dir):
 
+    payload = {
+            "data": {
+                "message": "[HUMANEVAL Client]: evaluating" 
+            }
+        }
+    post_log(payload)
+
     bench_client = HumanEvalClient(intelligence_url)
     problems = read_problems(problem_file)
 
@@ -103,6 +117,13 @@ def evaluate(intelligence_url, problem_file, k, n_completions, out_dir):
     save_result(formatted_result, out_dir)
 
 def format_result(results, scores):
+
+    payload = {
+            "data": {
+                "message": "[HUMANEVAL Client]: formatting result" 
+            }
+        }
+    post_log(payload)
 
     # Group all fields by task_id
     grouped = {}
@@ -134,6 +155,12 @@ def format_result(results, scores):
 
 
 def save_result(result, out_dir):
+    payload = {
+            "data": {
+                "message": "[HUMANEVAL Client]: saving result" 
+            }
+        }
+    post_log(payload)
     # print('result ', result)
     output_file_path = path.join(out_dir, "humaneval_results.json")
     with open(output_file_path, "wb") as fp:
@@ -160,6 +187,13 @@ if __name__ == "__main__":
     #     n_completions=6,
     #     out_file_path="./output.json"
     # )
+    payload = {
+            "data": {
+                "message": "[HUMANEVAL Client]: running" 
+            }
+        }
+    post_log(payload)
+
 
     parser = argparse.ArgumentParser()
 

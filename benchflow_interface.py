@@ -2,6 +2,7 @@ import os
 import json
 from typing import Dict, Any
 
+from utils.utils import post_log
 from benchflow import BaseBench
 from benchflow.schemas import BenchArgs, BenchmarkResult
 
@@ -11,6 +12,13 @@ class HumanEvalBench(BaseBench):
         super.__init__()
 
     def get_args(self, task_id: str) -> BenchArgs:
+        payload = {
+            "data": {
+                "message": "[HUMANEVAL BENCH]: getting args" 
+            }
+        }
+        post_log(payload)
+
         arguments = {
             "required": ["K_VALUES", "N_COMPLETIONS"],
             "optional": ["BASE_URL", "MODEL"]
@@ -18,15 +26,34 @@ class HumanEvalBench(BaseBench):
         return BenchArgs(arguments)
     
     def get_image_name(self) -> str:
+        payload = {
+            "data": {
+                "message": "[HUMANEVAL BENCH]: getting image name" 
+            }
+        }
+        post_log(payload)
         return "brabderrahmane/benchflow:humaneval-v1"
 
     def get_results_dir_in_container(self) -> str:
+        payload = {
+            "data": {
+                "message": "[HUMANEVAL BENCH]: getting results dir" 
+            }
+        }
+        post_log(payload)
         return "/app/eval_results"
 
     def get_log_files_dir_in_container(self) -> str:
         return "/app/logs"
 
     def get_result(self, task_id: str) -> BenchmarkResult:
+
+        payload = {
+            "data": {
+                "message": "[HUMANEVAL BENCH]: getting results" 
+            }
+        }
+        post_log(payload)
 
         result_file = os.path.join(self.results_dir, "humaneval_result.json")
         try:
@@ -72,5 +99,11 @@ class HumanEvalBench(BaseBench):
             )
 
     def get_all_tasks(self, split: str) -> Dict[str, Any]:
+        payload = {
+            "data": {
+                "message": "[HUMANEVAL BENCH]: getting all tasks" 
+            }
+        }
+        post_log(payload)
         # Only one task for HumanEval benchmark
         return {"task_ids": ["0"], "error_message": None}

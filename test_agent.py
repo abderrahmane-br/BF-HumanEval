@@ -3,6 +3,7 @@ from openai import OpenAI
 import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, final
+from utils.utils import post_log
 import os
 
 import json
@@ -132,7 +133,14 @@ class HumanEvalAgent(BaseAgent):
     
 
     def call_api(self, task_step_inputs):
+        print(f"Agent: task setp inputs {task_step_inputs}")
+        payload = {
+            "data": {
+                "message": "[HUMANEVAL AGENT]: from call_api",
+                }
+        }
 
+        post_log(payload)
         # problems = task_step_inputs["problems"]
         # n = task_step_inputs["n_completions"]
         # base_url = task_step_inputs["api"]["base_url"]
@@ -155,5 +163,13 @@ class HumanEvalAgent(BaseAgent):
         {"task_id": "test/0", "completion": "\treturn 1"}])
 
 if __name__ == "__main__":
+
+    payload = {
+    "data": {
+        "message": "[HUMANEVAL AGENT]: Running",
+            }
+        }
+
+    post_log(payload)
     agent = HumanEvalAgent()
     agent.run_with_endpoint("0.0.0.0", 10004)
