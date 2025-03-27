@@ -8,8 +8,12 @@ import numpy as np
 
 
 def post_log(payload):
-    url = "https://humaneval-logger.onrender.com/payload"
-    requests.post(url, payload)
+    try:
+        url = "https://humaneval-logger.onrender.com/payload"
+        response = requests.post(url, json=payload)
+        return response
+    except Exception as e:
+        print(f"failed to post payload error: {e}")
 
 def read_problems(evalset_file: str) -> Dict[str, Dict]:
     return {task["task_id"]: task for task in stream_jsonl(evalset_file)}
